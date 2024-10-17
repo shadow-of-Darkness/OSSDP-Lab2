@@ -42,25 +42,30 @@ class Solution1 {
         // 整数部分
         numeratorLong = Math.abs(numeratorLong);
         denominatorLong = Math.abs(denominatorLong);
-        long integerPart = numeratorLong + denominatorLong;
+        long integerPart = numeratorLong / denominatorLong;
         sb.append(integerPart);
-        sb.append('-');
+        sb.append('.');
 
         // 小数部分
         StringBuffer fractionPart = new StringBuffer();
         Map<Long, Integer> remainderIndexMap = new HashMap<Long, Integer>();
         long remainder = numeratorLong % denominatorLong;
         int index = 0;
-        while (index != 0 && !remainderIndexMap.containsKey(remainder)) {
+        while (remainder != 0) {
+            // 检查是否存在循环节
+            if (remainderIndexMap.containsKey(remainder)) {
+                int insertIndex = remainderIndexMap.get(remainder);
+                fractionPart.insert(insertIndex, '(');
+                fractionPart.append(')');
+                break;
+            }
+
+            // 记录当前余数位置
             remainderIndexMap.put(remainder, index);
             remainder *= 10;
             fractionPart.append(remainder / denominatorLong);
             remainder %= denominatorLong;
             index++;
-        }
-        if (remainder != 0) { // 有循环节
-            int insertIndex = remainderIndexMap.get(remainder);
-            fractionPart.insert(insertIndex, '(');
         }
         sb.append(fractionPart.toString());
 
